@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" type="text/css">
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML">
+</script>
+
+
+  <title>An interesting use of modular arithmetic (Part 1)</title>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+<header id="title-block-header">
+<h1 class="title">An interesting use of modular arithmetic (Part 1)</h1>
+</header>
+<p>Let <span class="math inline">\(a \geq 1\)</span> be an integer, and
+consider the function <span class="math inline">\(f: \mathbb{Z} \to
+\mathbb{Z}\)</span>:</p>
+<p><span class="math display">\[
+f(n) = \left \lfloor n + \frac{n}{a} \right \rfloor
+\]</span></p>
+<p>where <span class="math inline">\(\lfloor \cdot \rfloor\)</span> is
+the floor function. We want to prove that <span
+class="math inline">\(f(n) \not\equiv a \pmod{a+1}\)</span> for all
+<span class="math inline">\(n \in \mathbb{Z}\)</span>. First, consider
+that the first <span class="math inline">\(a - 1\)</span> values are</p>
+<p><span class="math display">\[
+f(0), \dots, f(a-1) \equiv 0, \dots, a-1 \pmod n
+\]</span></p>
+<p>as <span class="math inline">\(\frac{n}{a} &lt; 1\)</span> for <span
+class="math inline">\(n \leq a-1\)</span>, so the floor of <span
+class="math inline">\(n + \frac{n}{a}\)</span> would just be <span
+class="math inline">\(n\)</span>. But</p>
+<p><span class="math display">\[
+f(a) = \lfloor a + 1 \rfloor \equiv 0 \pmod{a+1}
+\]</span></p>
+<p>There seems to be a cycle here. Perhaps <span
+class="math inline">\(f\)</span> is periodic <span
+class="math inline">\(\bmod{a+1}\)</span> with period <span
+class="math inline">\(a\)</span>: that is, <span
+class="math inline">\(f(n) \equiv f(n+ak) \pmod{a+1}\)</span> for all
+<span class="math inline">\(k \geq 0\)</span>. Well, let’s verify:</p>
+<p><span class="math display">\[
+\begin{align}
+f(n + ak) &amp;= \left \lfloor n + ak + \frac{n + ak}{a} \right \rfloor
+\\
+&amp;= \left \lfloor n + \frac{n}{a} + ak + k \right \rfloor \\
+&amp;= \left \lfloor n + \frac{n}{a} \right \rfloor + ak + k \\
+&amp;= \left \lfloor n + \frac{n}{a} \right \rfloor + k(a+1) \\
+&amp;\equiv \left \lfloor n + \frac{n}{a} \right \rfloor \equiv f(n)
+\pmod{a+1}
+\end{align}
+\]</span></p>
+<p>And we can use the division algorithm to express any integer <span
+class="math inline">\(n\)</span> as <span class="math inline">\(ak +
+r\)</span> for a remainder <span class="math inline">\(0 \leq r &lt;
+a\)</span>. So</p>
+<p><span class="math display">\[
+f(ak + r) \equiv f(r) \not\equiv a \pmod n
+\]</span></p>
+<h3 id="what-happened">What happened?</h3>
+<p>In chess, there is little reason to pay for a chess engine (a program
+that plays and analyzes chess). Why? Because of two open-source engines
+called Stockfish and Leela Chess Zero, which have consistently been the
+two strongest chess engines in recent times. But for those who are rich,
+there are a lot of engines one could buy. One of the most popular
+choices is (or at least was) Houdini. Yet it turned out, those who
+bought Houdini might just have paid for Stockfish without knowing.</p>
+<p><a
+href="https://groups.google.com/g/fishcooking/c/DygaIdBvJm0/m/cjtMosvdBQAJ?pli=1">This
+post</a> on the Stockfish “FishCooking” (ha. ha.) forum claims that
+Houdini is a clone of Stockfish based on leaked source code. Now that
+isn’t damning evidence on its own, even if there isn’t a financial
+incentive for a free open-source engine to claim a competitor as a
+ripoff. But <a
+href="https://groups.google.com/g/fishcooking/c/DygaIdBvJm0/m/NbJuijtnBQAJ">a
+user</a> replying to the post made a great observation. In the claimed
+to be leaked source code, which is written in C++, there is an
+interesting line (<em>the comment is mine</em>):</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> ThreadPool<span class="op">::</span>bezochte_knopen<span class="op">()</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint64_t</span> knopen <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> activeThreadCount<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                knopen <span class="op">+=</span> threads<span class="op">[</span>i<span class="op">]-&gt;</span>rootStelling<span class="op">-&gt;</span>bezochte_knopen<span class="op">();</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        knopen <span class="op">+=</span> knopen <span class="op">/</span> <span class="dv">7</span><span class="op">;</span> <span class="co">// Inflates the node count by about 14%.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> knopen<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Let me explain the code. Chess engines report the number of “<a
+href="https://www.chessprogramming.org/Nodes_per_Second">nodes per
+second</a>”, which roughly measures how fast a chess engine is, and this
+<code>ThreadPool::bezochte_knopen</code> function calculates the nodes
+per second and returns it. The Houdini developer not only wants to avoid
+reporting similar nodes per second to Stockfish, but also probably got a
+bit greedy and wanted to inflate its nodes per second so “their” engine
+looks better than Stockfish. So here comes this line:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>knopen <span class="op">+=</span> knopen <span class="op">/</span> <span class="dv">7</span><span class="op">;</span></span></code></pre></div>
+<p>Here’s the problem though. <code>knopen</code> (the nodes per second
+reported) is an integer type (of <code>uint64_t</code>), and when
+dividing an integer by an integer, C++ takes the quotient and discards
+the fractional part to yield the result:</p>
+<blockquote>
+<p>“The binary / operator yields the quotient, and the binary % operator
+yields the remainder from the division of the first expression by the
+second. If the second operand of / or % is zero the behavior is
+undefined. For integral operands the / operator yields the algebraic
+quotient with any <strong>fractional part discarded</strong>; if the
+quotient a/b is representable in the type of the result, (a/b)*b + a%b
+is equal to a.” - <a
+href="https://timsong-cpp.github.io/cppwp/n3337/expr.mul">C++11 standard
+draft N3337</a>, 5.6(4)</p>
+</blockquote>
+<p>Both <code>knopen</code> and <code>7</code> are not negative
+integers, so to discard the fractional part of <code>knopen / 7</code>
+would mean taking its floor. So the line
+<code>knopen += knopen + 7</code> basically defines the map</p>
+<p><span class="math display">\[
+\mathrm{knopen} \mapsto \mathrm{knopen} + \left \lfloor
+\frac{\mathrm{knopen}}{7} \right \rfloor = \left \lfloor \mathrm{knopen}
++ \frac{\mathrm{knopen}}{7} \right \rfloor
+\]</span></p>
+<p>But as we showed at the start, this means the <code>knopen</code>
+returned from the function cannot be congruent to <span
+class="math inline">\(7 \pmod 8\)</span>.</p>
+<p>And indeed that was what <a
+href="https://groups.google.com/g/fishcooking/c/DygaIdBvJm0/m/NbJuijtnBQAJ">the
+user</a> observed:</p>
+<blockquote>
+<p>“The code is interesting in that it never reports a node count which
+is 7 mod 8, which is externally observable.”</p>
+</blockquote>
+<p>To test this theory, <a
+href="https://groups.google.com/g/fishcooking/c/DygaIdBvJm0/m/C5prRUNqBQAJ">another
+user</a> took a game from a chess engine tournament between Houdini and
+Stockfish and collated the nodes per second reported by both engines.
+And lo and behold, Houdini <strong>never reported a node count congruent
+to <span class="math inline">\(7 \pmod 8\)</span></strong>:</p>
+<blockquote>
+<p>“That’s a cool observation. Here is some evidence based on the
+publicly available log file of TCEC game 68 (Stoofvlees-Houdini) in
+current Divsion P: http://tinyurl.com/r63jr93</p>
+</blockquote>
+<blockquote>
+<p>Number of occurrences of reported nodes mod 8:”</p>
+</blockquote>
+<pre><code>[292, 304, 296, 295, 291, 308, 289, 0]     (Houdini)
+[240, 230, 234, 231, 243, 220, 215, 210]    (Stoofvlees)</code></pre>
+<h3 id="whats-the-solution">What’s the solution?</h3>
+<p>The best solution is to not rip off open source chess engines and
+sell them, and this is the only solution I endorse. But if you are the
+Houdini developer and wanna make some quick bucks, I will go over some
+possible solutions in the next post of this (not really) thrilling
+series.</p>
+</body>
+</html>
