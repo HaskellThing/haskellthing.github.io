@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" type="text/css">
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML">
+</script>
+
+
+  <title>Neat example of generating functions</title>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+<header id="title-block-header">
+<h1 class="title">Neat example of generating functions</h1>
+</header>
+<p>Consider that even if a die is fair, if we throw two of those dice,
+we have a 1/6 chance of rolling a 7, even though there are 11 possible
+outcomes. The probability of each outcome (a sum of 2 to 12) is not
+equal to each other. We might wonder if it’s possible to change our die
+so that there <em>is</em> an equal probability of each outcome – that
+is, there is a 1/11 probability each of rolling a sum from 2 to 12.</p>
+<p>The answer is no.</p>
+<h3 id="unreasonably-effective-generating-functions">Unreasonably
+effective: generating functions</h3>
+<p>Let <span class="math inline">\(p_1, \dots, p_6\)</span> be the
+probability of rolling a <span class="math inline">\(1, \dots,
+6\)</span> respectively with our die. We can define the polynomial,
+which we will call the <strong>generating function</strong> of the
+probabilities:</p>
+<p><span class="math display">\[
+f(x) = p_1x + p_2x^2 + \dots + p_6x^6
+\]</span> Don’t worry too much about the properties of this polynomial
+for now. We are most concerned with something neat that happens when we
+multiply this polynomial by itself. Let’s go over an example to see:</p>
+<p><strong>Example: a fair die.</strong> A fair die has probabilities
+<span class="math inline">\(p_1 = \dots = p_6 = \frac{1}{6}\)</span>.
+Then the generating function is</p>
+<p><span class="math display">\[
+f(x) = \frac{1}{6}x + \frac{1}{6}x^2 + \dots + \frac{1}{6}x^6
+\]</span> Consider what happens when we multiply <span
+class="math inline">\(f\)</span> by itself:</p>
+<p><span class="math display">\[
+f(x)^2 = \left(\frac{1}{6}x + \frac{1}{6}x^2 + \dots +
+\frac{1}{6}x^6\right)\left(\frac{1}{6}x + \frac{1}{6}x^2 + \dots +
+\frac{1}{6}x^6\right)
+\]</span> What is the coefficient of, say for example, <span
+class="math inline">\(x^4\)</span> in <span
+class="math inline">\(f(x)^2\)</span>? Well, to expand this polynomial,
+we choose one term from the left factor and one term in the right
+factor, and for it to contribute to the coefficient of <span
+class="math inline">\(x^4\)</span>, the two terms we do choose must have
+powers of <span class="math inline">\(x\)</span> that sum to <span
+class="math inline">\(4\)</span>. In this case,</p>
+<p><span class="math display">\[
+\left(\frac{1}{6}x\right)\left(\frac{1}{6}x^3\right) +
+\left(\frac{1}{6}x^2\right)\left(\frac{1}{6}x^2\right) +
+\left(\frac{1}{6}x^3\right)\left(\frac{1}{6}x\right) = \frac{1}{36}x^4 +
+\frac{1}{36}x^4 + \frac{1}{36}x^4 = \frac{1}{12}x^4
+\]</span> Remarkably, the probability of rolling a <span
+class="math inline">\(4\)</span> with two of our fair dice is <span
+class="math inline">\(\frac{1}{12}\)</span>. We could make a table, but
+we could also note that the three ways of rolling a <span
+class="math inline">\(4\)</span> are (a) if we roll <span
+class="math inline">\(1\)</span> with the first die and <span
+class="math inline">\(3\)</span> with the second die, (b) if we roll
+<span class="math inline">\(2\)</span> with both dice, or (c) if we roll
+<span class="math inline">\(3\)</span> with our first die and <span
+class="math inline">\(1\)</span> with our second die. And in all three
+cases, the probability of rolling a specific outcome with <span
+class="math inline">\(1\)</span> die is <span
+class="math inline">\(\frac{1}{6}\)</span>, so the probability of each
+case over all is <span class="math inline">\(\frac{1}{6} \times
+\frac{1}{6} = \frac{1}{36}\)</span>. Adding the probability of all three
+cases together yields an overall probability of <span
+class="math inline">\(\frac{3}{36} = \frac{1}{12}\)</span>.</p>
+<p>By multiplying <span class="math inline">\(f\)</span> by itself, we
+are modelling the same thing.</p>
+<p><strong>In general.</strong> Let <span
+class="math inline">\(f\)</span> and <span
+class="math inline">\(g\)</span> be generating functions for two dice
+with probabilities <span class="math inline">\(p_1, \dots, p_6\)</span>
+and <span class="math inline">\(q_1, \dots, q_6\)</span> respectively.
+Then their product has, for the coefficient of <span
+class="math inline">\(x^n\)</span>, the probability of rolling a sum of
+<span class="math inline">\(n\)</span> when we roll both dice.
+Specifically, it is a useful exercise to show that</p>
+<p><span class="math display">\[
+f(x)g(x) = \sum_{n=1}^{12} \left( \sum_{k=1}^n
+\underbrace{p_{k}}_{\text{rolling $k$ with the first die}} \times
+\underbrace{q_{n-k}}_{\text{rolling $n-k$ with the second die}} \right)
+x^n
+\]</span> I added a note so you can hopefully see <em>why</em>
+multiplying these two polynomials together represents the probabilities
+of each outcome. When <span class="math inline">\(f = g\)</span>, then
+the product represents the probabilities for two of the same die.</p>
+<h3 id="solving-the-problem">Solving the problem</h3>
+<p>Assume that there is a die where if we roll two of those dice, there
+is a 1/11 probability each of rolling a sum from 2 to 12. Or in the
+language of generating functions, there is a generating function <span
+class="math inline">\(f\)</span> for die probabilities <span
+class="math inline">\(p_1, \dots, p_6\)</span>:</p>
+<p><span class="math display">\[
+f(x) = p_1x + p_2x^2 + \dots + p_6x^6
+\]</span> such that</p>
+<p><span class="math display">\[
+f(x)^2 = \frac{1}{11}x^2 + \dots + \frac{1}{11}x^{12}
+\]</span> We can factor <span class="math inline">\(f\)</span> as <span
+class="math display">\[
+f(x) = a_0(x-a_1)\dots(x-a_6)
+\]</span> Squaring <span class="math inline">\(f\)</span> simply doubles
+the multiplicity of each root, so every root has even multiplicity:</p>
+<p><span class="math display">\[
+f(x)^2 = a_0^2(x-a_1)^2\dots(x-a_6)^2
+\]</span> But notice that</p>
+<p><span class="math display">\[
+\begin{align*}
+\frac{1}{11}x^2 + \dots + \frac{1}{11}x^{12} &amp;= \frac{1}{11}x^2
+(1+x+\dots+x^{10})
+\end{align*}
+\]</span> And <span class="math display">\[
+1+x+\dots+x^{10} = \frac{x^{11} - 1}{x-1}
+\]</span> We can factor <span class="math inline">\(x^{11} - 1\)</span>
+with its roots of unity: <span class="math display">\[
+x^{11} - 1 = (x-1)(x - e^{2\pi i/11}) (x - e^{4\pi i/11}) \dots
+(x-e^{20\pi i/11})
+\]</span> So <span class="math display">\[
+\begin{align*}
+1+x+\dots+x^{10} &amp;= \frac{x^{11} - 1}{x-1} \\
+&amp;= (x - e^{2\pi i/11}) (x - e^{4\pi i/11}) \dots (x-e^{20\pi i/11})
+\\
+\frac{1}{11}x^2 + \dots + \frac{1}{11}x^{12} &amp;= \frac{1}{11}x^2 (x -
+e^{2\pi i/11}) (x - e^{4\pi i/11}) \dots (x-e^{20\pi i/11})
+\end{align*}
+\]</span> But this factorization contains roots with multiplicity <span
+class="math inline">\(1\)</span>, when we established earlier that <span
+class="math inline">\(f^2\)</span> has roots of even multiplicity, so
+the generating function <span class="math inline">\(f\)</span> we wanted
+to construct at the start does not exist. The verdict: there is no die,
+even a biased one, where if we roll two of those dice, there is a 1/11
+probability each of rolling a sum from 2 to 12.</p>
+</body>
+</html>
