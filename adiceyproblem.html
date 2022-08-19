@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" type="text/css">
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML">
+</script>
+
+
+  <title>A dicey problem</title>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+<h2 id="newcommandcohmathrmspanh"><span
+class="math inline">\(\newcommand{\coh}[]{\mathrm{span}(h)}\)</span></h2>
+<h2 id="title-a-dicey-problem">title: A dicey problem</h2>
+<p>(<em>Sorry. The pun is a bit dicey.</em>)</p>
+<p>Last time, we proved that it is impossible to design a die such that
+there’s an equal probability of each outcome when we roll two of our
+dice. Now it is time to answer the more general question: given
+probabilities <span class="math inline">\(q_2, \dots, q_{12}\)</span> of
+rolling <span class="math inline">\(2\)</span> to <span
+class="math inline">\(12\)</span>, is it possible to set the
+probabilities <span class="math inline">\(p_1, \dots, p_6\)</span> of a
+biased die so the probabilities of the outcomes when we roll two dice
+are <span class="math inline">\(q_2, \dots, q_{12}\)</span>?</p>
+<p>Let <span class="math inline">\(g\)</span> be the generating function
+of <span class="math inline">\(q_2, \dots, q_{12}\)</span> defined as
+<span class="math display">\[
+g(x) = q_2x^2 + \dots + q_{12}x^{12}
+\]</span> Recall that the generating function of our die probabilities
+is <span class="math display">\[
+f(x) = p_1x_1 + \dots + p_6x^6
+\]</span> and we want to set <span class="math inline">\(p_1, \dots,
+p_6\)</span> so that <span class="math display">\[
+f(x)^2 = g(x)
+\]</span> There are two problems here: - Does an <span
+class="math inline">\(f\)</span> exist? - And how do we calculate
+it?</p>
+<h3 id="two-birds-with-one-stone">Two birds with one stone</h3>
+<p>If there exists an <span class="math inline">\(f\)</span> such that
+<span class="math inline">\(f^2 = g\)</span>, then factoring <span
+class="math display">\[
+f(x) = a_0(x-a_1)\dots(x-a_6)
+\]</span> means that <span class="math inline">\(g\)</span> must be in
+the form <span class="math display">\[
+g(x) = a_0^2(x-a_1)^2\dots(x-a_6)^2
+\]</span> So <span class="math inline">\(g\)</span> must have all roots
+be of even multiplicity, but if that is the case, we can simply take the
+square root of each factor and get <span
+class="math inline">\(f\)</span>. But it’s not enough to factor <span
+class="math inline">\(g\)</span>, see that all roots do indeed have even
+multiplicity, and then assume <span class="math inline">\(f\)</span>
+exists. We just also make sure that <span
+class="math inline">\(f\)</span> is actually a generating function –
+that all coefficients add to <span class="math inline">\(1\)</span>.
+Luckily that is so easy: just evaluate the polynomial at <span
+class="math inline">\(1\)</span>. If we can get <span
+class="math inline">\(g\)</span> into the above form, it must be true
+that <span class="math display">\[
+a_0(1-a_1)\dots (1-a_6) = 1
+\]</span> ### Finding the roots Finding roots of polynomials that have a
+degree of <span class="math inline">\(5\)</span> or higher <a
+href="https://mathworld.wolfram.com/AbelsImpossibilityTheorem.html">is
+hard</a>, and definitely shouldn’t be done by hand outside of some
+simple cases. One standard approach is to use a root-finding algorithm
+that uses the derivatives of the polynomial to converge towards a root.
+But there is another way which is more beautiful and avoids some nasty
+convergence issues of those types of algorithms.</p>
+<p>Let <span class="math inline">\(T\)</span> be a linear operator on a
+real vector space. Recall that the characteristic polynomial <span
+class="math inline">\(p_T(x)\)</span> of <span
+class="math inline">\(T\)</span> is the unique polynomial whose roots
+are the eigenvalues of <span class="math inline">\(T\)</span> counting
+multiplicity. Our goal is to construct a nonzero operator <span
+class="math inline">\(T\)</span> such that its characteristic polynomial
+<span class="math inline">\(p_T\)</span> is proportional to <span
+class="math inline">\(g\)</span> – it doesn’t have to be equal since if
+they’re proportional, they have the same roots and multiplicities. Then
+we can just use any algorithm that finds eigenvalues to find the roots
+of <span class="math inline">\(g\)</span>.</p>
+<p>Again, let <span class="math inline">\(g\)</span> be the generating
+function of <span class="math inline">\(q_2, \dots, q_{12}\)</span>
+defined as <span class="math display">\[
+g(x) = q_2x^2 + \dots + q_{12}x^{12}
+\]</span> Let <span class="math inline">\(q_0 = q_1 = 0\)</span>. Let
+<span class="math inline">\(d\)</span> be the degree of <span
+class="math inline">\(g\)</span>, which is not necessarily equal to
+<span class="math inline">\(12\)</span>. Define the polynomial <span
+class="math display">\[
+h(x) = \frac{g(x)}{q_d} = \frac{q_2}{q_d}x^2 + \dots +
+\frac{q_{d-1}}{q_d}x^{d-1} + x^d
+\]</span> which has the same roots and multiplicities as <span
+class="math inline">\(g\)</span>, but becomes a monic polynomial. To
+construct our operator <span class="math inline">\(T\)</span>, we could
+just use good old <span class="math inline">\(\mathbb{R}^d\)</span>, but
+we will use an isomorphic vector space where constructing <span
+class="math inline">\(T\)</span> is easy.</p>
+<h4 id="a-cool-trick">A cool trick</h4>
+<p>Let <span class="math inline">\(\mathbb{R}[x]\)</span> be the real
+vector space of polynomials with real coefficients. Let <span
+class="math inline">\((h)\)</span> be the subspace of all polynomials
+that are a polynomial (not just a scalar) multiple of <span
+class="math inline">\(h\)</span>. Then consider the quotient space <span
+class="math inline">\(\mathbb{R}[x]/(h)\)</span>. We propose that <span
+class="math inline">\(\beta = 1, x, \dots, x^{d-1}\)</span> is a basis
+of this space.</p>
+<p>Obviously, <span class="math inline">\(\beta\)</span> is linearly
+independent, and since <span class="math inline">\((h)\)</span> has only
+the zero polynomial and polynomials of degree <span
+class="math inline">\(d\)</span> or higher, the difference of two
+polynomials in the list as elements of <span
+class="math inline">\(\mathbb{R}[x]\)</span> cannot be in <span
+class="math inline">\((h)\)</span> (as the difference would have at most
+degree <span class="math inline">\(d-1\)</span>), so <span
+class="math inline">\(\beta\)</span> is also distinct.</p>
+<p>Now let <span class="math inline">\(d&#39; \geq d\)</span>, and let
+<span class="math inline">\(s\)</span> be a polynomial of degree <span
+class="math inline">\(d\)</span>. Use the division algorithm to express
+<span class="math inline">\(s\)</span> in the form <span
+class="math inline">\(ht + r\)</span>, where <span
+class="math inline">\(t\)</span> is a polynomial and <span
+class="math inline">\(r\)</span> is a polynomial of degree less than
+<span class="math inline">\(d\)</span>. Then <span
+class="math inline">\(s - r = ht\)</span> and, <strong>as a coset in
+<span class="math inline">\(\mathbb{R}[x]/(h)\)</span></strong>, we can
+see that <span class="math inline">\(s = r\)</span>. And since we can
+express <span class="math inline">\(r\)</span> in terms of <span
+class="math inline">\(\beta\)</span>, it holds that <span
+class="math inline">\(\beta\)</span> spans <span
+class="math inline">\(\mathbb{R}[x]/(h)\)</span>, so it is a basis.</p>
+<p>Since <span class="math inline">\(\mathbb{R}[x]/(h)\)</span> is a
+<span class="math inline">\(d\)</span>-dimensional real vector space, it
+is isomorphic to <span class="math inline">\(\mathbb{R}^d\)</span>. Now
+define the operator <span class="math inline">\(T: \mathbb{R}[x]/(h) \to
+\mathbb{R}[x]/(h)\)</span> as the operator which multiplies the
+polynomial by <span class="math inline">\(x\)</span>: <span
+class="math display">\[
+T(s) = x \cdot s
+\]</span> To show that <span class="math inline">\(T\)</span> is indeed
+linear, consider that we can define <span
+class="math inline">\(T\)</span> linearly on our basis <span
+class="math inline">\(\beta\)</span> as follows: <span
+class="math display">\[
+\begin{align*}
+1 &amp;\mapsto x \\
+x &amp;\mapsto x^2 \\
+&amp;\vdots \\
+x^{d-2} &amp;\mapsto x^{d-1} \\
+x^{d-1} &amp;\mapsto -\frac{q_2}{q_d}x^2 - \dots -
+\frac{q_{d-1}}{q_d}x^{d-1}
+\end{align*}
+\]</span> as <span class="math display">\[
+T(x^{d-1}) = x^d = h -\frac{q_2}{q_d}x^2 - \dots -
+\frac{q_{d-1}}{q_d}x^{d-1}
+\]</span> so <span class="math inline">\(x^d\)</span> is in the coset of
+<span class="math inline">\(-\frac{q_2}{q_d}x^2 - \dots -
+\frac{q_{d-1}}{q_d}x^{d-1}\)</span>. But why did we even bother to do
+all this? Because there’s an absolutely beautiful proof that <span
+class="math inline">\(h\)</span> is the characteristic polynomial of
+<span class="math inline">\(T\)</span>.</p>
+<h4 id="the-beautiful-proof">The beautiful proof</h4>
+<p>First, notice what happens when we apply a polynomial <span
+class="math inline">\(a_0 + a_1x + \dots + a_mx^m\)</span> to <span
+class="math inline">\(T\)</span>: <span class="math display">\[
+\begin{align*}
+(a_0 + a_1x +\dots + a_mx^m)(T)(s) &amp;= (a_0 + a_1T + \dots + a_mT^m)s
+\\
+&amp;= (a_0 + a_1x + \dots + a_mx^m)s
+\end{align*}
+\]</span> We are simply multiplying the polynomial by <span
+class="math inline">\(s\)</span>, where we do the multiplication in
+<span class="math inline">\(\mathbb{R}[x]/(h)\)</span> (so modulo <span
+class="math inline">\(h\)</span>). Now, consider that <strong>as a coset
+of <span class="math inline">\(\mathbb{R}[x]/(h)\)</span></strong>
+(again!), <span class="math inline">\(h = 0\)</span>. So <span
+class="math inline">\(h(T)(s) = 0\)</span> for all polynomials <span
+class="math inline">\(s\)</span> and thus <span
+class="math inline">\(h(T) = 0\)</span>.</p>
+<p>A polynomial of degree less than <span
+class="math inline">\(d\)</span> cannot be <span
+class="math inline">\(0\)</span> in <span
+class="math inline">\(\mathbb{R}[x]/(h)\)</span>, as the <span
+class="math inline">\(0\)</span> coset strictly consists of polynomials
+of degree <span class="math inline">\(d\)</span> or higher.
+Specifically, if we let <span class="math inline">\(s = 1\)</span>, then
+applying such a polynomial to <span class="math inline">\(s\)</span>
+yields itself, so it cannot annihilate <span
+class="math inline">\(T\)</span>. So <span
+class="math inline">\(h\)</span> is the minimal polynomial of <span
+class="math inline">\(T\)</span>, and since the degree of <span
+class="math inline">\(h\)</span> is <span
+class="math inline">\(d\)</span> (the dimension of <span
+class="math inline">\(\mathbb{R}[x]/(h)\)</span>, it is also the
+characteristic polynomial of <span class="math inline">\(h\)</span>.</p>
+<h4 id="the-matrix-of-t">The matrix of <span
+class="math inline">\(T\)</span></h4>
+<p>The matrix of <span class="math inline">\(T\)</span> has a cool name:
+it is the <a
+href="https://mathworld.wolfram.com/CompanionMatrix.html">companion
+matrix</a> of <span class="math inline">\(h\)</span>. We can construct
+the matrix knowing from earlier how <span
+class="math inline">\(T\)</span> acts on each basis polynomial of <span
+class="math inline">\(\mathbb{R}[x]/(h)\)</span>: <span
+class="math display">\[
+\begin{pmatrix}
+0 &amp; 0 &amp; \dots &amp; 0 &amp; 0 \\
+1 &amp; 0 &amp; \dots &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; \dots &amp; 0 &amp; -\frac{q_2}{q_d} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+0 &amp; 0 &amp; \dots &amp; 1 &amp; -\frac{q_{d-1}}{q_d}
+\end{pmatrix}
+\]</span> The first <span class="math inline">\(d-1\)</span> columns
+raise the power of each term <span class="math inline">\(x^n\)</span> by
+<span class="math inline">\(1\)</span> (basically a “right shift”), but
+the last column is the way it is since <span
+class="math inline">\(T\)</span> acts on <span
+class="math inline">\(x^{d-1}\)</span> differently as we are multiplying
+modulo <span class="math inline">\(h\)</span>. So we can easily
+construct the companion matrix of <span class="math inline">\(h\)</span>
+then find the eigenvalues computationally, then see both <span
+class="math inline">\(f\)</span> exists and, if it does exist, what it
+is.</p>
+<h3 id="code-and-example">Code and example</h3>
+<p>The following Python function <code>roots_gf</code> calculates the
+roots of <span class="math inline">\(g\)</span> expressed as <span
+class="math display">\[
+g(x) = q_2x^2 + \dots + q_{12}x^{12}
+\]</span> by computing the eigenvalues of its companion matrix. Since
+the numpy <code>polycompanion</code> function automatically converts
+<span class="math inline">\(g\)</span> into its monic form <span
+class="math inline">\(h\)</span>, we don’t have to do that
+ourselves.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.polynomial.polynomial <span class="im">import</span> polycompanion</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> roots_gf(probs):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Given a list of probabilities [q_{2}, ..., q_{12}], return a list of </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    roots of its generating function</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    g(x) = q_{2}x^{2} + ... + q_{12}x^{12}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    padded_probs <span class="op">=</span> np.concatenate(([<span class="dv">0</span>, <span class="dv">0</span>], probs))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.linalg.eig(polycompanion(padded_probs))[<span class="dv">0</span>]</span></code></pre></div>
+<p>Let’s set <span class="math inline">\(g\)</span> to be the generating
+function of the probabilities for two fair dice and see what we get:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> roots_gf([<span class="dv">1</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">2</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">3</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">4</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">5</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">6</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">5</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">4</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">3</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">2</span><span class="op">/</span><span class="dv">36</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">36</span>])</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>array([ <span class="fl">0.5</span>       <span class="op">+</span><span class="ot">0.86602541j</span>,  <span class="fl">0.5</span>       <span class="op">-</span><span class="ot">0.86602541j</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.5</span>       <span class="op">+</span><span class="ot">0.8660254j</span> ,  <span class="fl">0.5</span>       <span class="op">-</span><span class="ot">0.8660254j</span> ,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.99999998</span><span class="op">+</span><span class="ot">0.j</span>        , <span class="op">-</span><span class="fl">1.00000002</span><span class="op">+</span><span class="ot">0.j</span>        ,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.5</span>       <span class="op">+</span><span class="ot">0.86602541j</span>, <span class="op">-</span><span class="fl">0.5</span>       <span class="op">-</span><span class="ot">0.86602541j</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.5</span>       <span class="op">+</span><span class="ot">0.8660254j</span> , <span class="op">-</span><span class="fl">0.5</span>       <span class="op">-</span><span class="ot">0.8660254j</span> ,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.</span>        <span class="op">+</span><span class="ot">0.j</span>        ,  <span class="fl">0.</span>        <span class="op">+</span><span class="ot">0.j</span>        ])</span></code></pre></div>
+<p>Okay there is a bit of floating-point error, but you can see that
+each root has even multiplicity. Now let’s set the probabilities <span
+class="math inline">\(q_2, \dots, q_{12} = \frac{1}{11}\)</span> like we
+did in our last post:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> roots_gf([<span class="dv">1</span><span class="op">/</span><span class="dv">11</span>]<span class="op">*</span><span class="dv">11</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>array([ <span class="fl">0.84125353</span><span class="op">+</span><span class="ot">0.54064082j</span>,  <span class="fl">0.84125353</span><span class="op">-</span><span class="ot">0.54064082j</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.41541501</span><span class="op">+</span><span class="ot">0.909632j</span>  ,  <span class="fl">0.41541501</span><span class="op">-</span><span class="ot">0.909632j</span>  ,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.14231484</span><span class="op">+</span><span class="ot">0.98982144j</span>, <span class="op">-</span><span class="fl">0.14231484</span><span class="op">-</span><span class="ot">0.98982144j</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.95949297</span><span class="op">+</span><span class="ot">0.28173256j</span>, <span class="op">-</span><span class="fl">0.95949297</span><span class="op">-</span><span class="ot">0.28173256j</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>       <span class="op">-</span><span class="fl">0.65486073</span><span class="op">+</span><span class="ot">0.75574957j</span>, <span class="op">-</span><span class="fl">0.65486073</span><span class="op">-</span><span class="ot">0.75574957j</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.</span>        <span class="op">+</span><span class="ot">0.j</span>        ,  <span class="fl">0.</span>        <span class="op">+</span><span class="ot">0.j</span>        ])</span></code></pre></div>
+<p>Don’t get confused by the signs - roots of real polynomials come in
+conjugate pairs, so a root <span class="math inline">\(a+bi\)</span> is
+also a root <span class="math inline">\(a - bi\)</span>. But aside from
+the root <span class="math inline">\(0\)</span>, each root only has
+multiplicity <span class="math inline">\(1\)</span>. We can see that the
+roots are, as we showed last time, indeed the 11th roots of unity by
+converting to polar form:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cmath</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> polar_roots <span class="op">=</span> <span class="bu">map</span>(cmath.polar, roots_gf([<span class="dv">1</span><span class="op">/</span><span class="dv">11</span>]<span class="op">*</span><span class="dv">11</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="bu">list</span>(polar_roots)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>[(<span class="fl">0.9999999999999993</span>, <span class="fl">0.5711986642890539</span>), </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999993</span>, <span class="op">-</span><span class="fl">0.5711986642890539</span>), </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999991</span>, <span class="fl">1.1423973285781064</span>), </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999991</span>, <span class="op">-</span><span class="fl">1.1423973285781064</span>), </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a> (<span class="fl">1.0000000000000004</span>, <span class="fl">1.71359599286716</span>), </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a> (<span class="fl">1.0000000000000004</span>, <span class="op">-</span><span class="fl">1.71359599286716</span>), </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999994</span>, <span class="fl">2.8559933214452666</span>), </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999994</span>, <span class="op">-</span><span class="fl">2.8559933214452666</span>), </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999993</span>, <span class="fl">2.284794657156213</span>), </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.9999999999999993</span>, <span class="op">-</span><span class="fl">2.284794657156213</span>), </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.0</span>, <span class="fl">0.0</span>), </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a> (<span class="fl">0.0</span>, <span class="fl">0.0</span>)]</span></code></pre></div>
+<p>Yuck! Floating-point error. We know that the modulus of each number
+is basically <span class="math inline">\(1\)</span> anyways. We can see
+that the phase of each root are just multiples of <span
+class="math inline">\(2\pi/11 \approx 0.57119866428\)</span>, exactly
+what we expect if the roots are just 11th roots of unity.</p>
+</body>
+</html>
